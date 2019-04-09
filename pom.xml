@@ -21,7 +21,6 @@
   	<groupId>com.fasterxml.woodstox</groupId>
   	<artifactId>woodstox-core</artifactId>
   	<version>5.2.0</version>
-  	<type>bundle</type>
   </dependency>
   </dependencies>
 </project>
