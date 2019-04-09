@@ -14,13 +14,15 @@ import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
+import org.codehaus.stax2.XMLInputFactory2;
+
 public class XMLInputOutput {
 	private File file;
 	private XMLInputFactory factory;
     private XMLEventReader eventReader;
     
     public XMLInputOutput(String filePath) {
-    	
+    	XMLInputFactory2 pippo;
     	file = new File(filePath);
     	factory = XMLInputFactory.newInstance();
     	try {
