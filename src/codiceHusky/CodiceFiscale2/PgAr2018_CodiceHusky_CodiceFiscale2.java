@@ -8,10 +8,16 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 		Persona persona;
 		XMLInputOutput xml = new XMLInputOutput("xml/inputPersone.xml");
 		
-		persona = xml.readNextPersona();
+		System.out.println(xml.readNextPersona().toString());
+		System.out.println(xml.readNextPersona().toString());
+		System.out.println(xml.readNextPersona().toString());
+		System.out.println(xml.readNextPersona().toString());
+		System.out.println(xml.readNextPersona().toString());
+		System.out.println(xml.readNextPersona().toString());
+
 
 		
-		System.out.println(persona.toString());
+		//System.out.println(persona.toString());
 
 	}
 
