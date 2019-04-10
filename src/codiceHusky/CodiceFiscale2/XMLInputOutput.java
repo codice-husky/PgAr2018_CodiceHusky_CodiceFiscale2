@@ -40,19 +40,22 @@ public class XMLInputOutput {
     	char sessoPersona = 0;
     	try {
     		if(xmlStreamReader.hasNext()) lastEventType = xmlStreamReader.next();
+    		
     		String read;
     		if(lastEventType == XMLEvent.START_ELEMENT || lastEventType == XMLEvent.END_ELEMENT) {
     			read = xmlStreamReader.getName().toString();
     		} else  {
     			read = xmlStreamReader.getText().toString();
     		}
-			do {
-				if(xmlStreamReader.hasNext()) lastEventType = xmlStreamReader.next();
+    		do {
+    			if(xmlStreamReader.hasNext()) lastEventType = xmlStreamReader.next();
+    			if(lastEventType == XMLEvent.END_DOCUMENT) return null;
+        		else {
     			if(lastEventType == XMLEvent.START_ELEMENT || lastEventType == XMLEvent.END_ELEMENT) {
-        			read = xmlStreamReader.getName().toString();
-        		} else  {
-        			read = xmlStreamReader.getText().toString();
-        		}
+    				read = xmlStreamReader.getName().toString();
+    			} else  {
+    				read = xmlStreamReader.getText().toString();
+    			}
     			
     			if(lastEventType!=XMLEvent.END_ELEMENT) {
     				switch(read) {
@@ -80,38 +83,59 @@ public class XMLInputOutput {
     					if(xmlStreamReader.hasNext()) lastEventType = xmlStreamReader.next();
     					dataNascita = xmlStreamReader.getText().toString();
     					break;
-    				default:
+    				}
+    			}
+        		}
+    		} while(!(lastEventType == XMLEvent.END_ELEMENT && read.equals("persona")));
+    		
+    		return new Persona(idPersona, nomePersona, cognomePersona, sessoPersona, comuneNascita, dataNascita);
+    	} catch (XMLStreamException e) {
+    		e.printStackTrace();
+    	}
+    	return null;
+    }
+    
+    
+    
+    public Comune readNextComune() {
+    	String nome = null, codice = null;
+    	try {
+    		if(xmlStreamReader.hasNext()) lastEventType = xmlStreamReader.next();
+    		String read;
+    		if(lastEventType == XMLEvent.START_ELEMENT || lastEventType == XMLEvent.END_ELEMENT) {
+    			read = xmlStreamReader.getName().toString();
+    		} else  {
+    			read = xmlStreamReader.getText().toString();
+    		}
+			do {
+				if(xmlStreamReader.hasNext()) lastEventType = xmlStreamReader.next();
+    			if(lastEventType == XMLEvent.START_ELEMENT || lastEventType == XMLEvent.END_ELEMENT) {
+        			read = xmlStreamReader.getName().toString();
+        		} else  {
+        			read = xmlStreamReader.getText().toString();
+        		}
+    			
+    			if(lastEventType!=XMLEvent.END_ELEMENT) {
+    				switch(read) {
+    				case "nome":
+    					if(xmlStreamReader.hasNext()) lastEventType = xmlStreamReader.next();
+    					nome = xmlStreamReader.getText().toString();
+    					break;
     					
+    				case "codice":
+    					if(xmlStreamReader.hasNext()) lastEventType = xmlStreamReader.next();
+    					codice = xmlStreamReader.getText().toString();
     					break;
     				}
     			}
-			} while(!(lastEventType == XMLEvent.END_ELEMENT && read.equals("persona")));
+			} while(!((lastEventType == XMLEvent.END_ELEMENT || lastEventType == XMLEvent.END_DOCUMENT) && read.equals("persona")));
 			
-			return new Persona(idPersona, nomePersona, cognomePersona, sessoPersona, comuneNascita, dataNascita);
+			return new Comune(nome, codice);
 			
 			} catch (XMLStreamException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		return null;
-    	
-    	/*while(xmlStreamReader.hasNext()){
-			int eventType = xmlStreamReader.next();
-			switch (eventType) {
-			case XMLEvent.START_ELEMENT:
-	        System.out.print("<"+xmlStreamReader.getName().toString()+">");
-		        break;
-		    case XMLEvent.CHARACTERS:
-		        System.out.print(xmlStreamReader.getText());
-		    	break;
-		    case XMLEvent.END_ELEMENT:
-		        System.out.println("</"+xmlStreamReader.getName().toString()+">");
-		        break;
-		    default:
-		        //do nothing
-		        break;
-			    }
-			}*/
     }
 
 }
