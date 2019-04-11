@@ -6,11 +6,28 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 		// TODO Auto-generated method stub
 		
 		Persona persona;
+		String codice;
 		XMLInputOutput xml = new XMLInputOutput("xml/inputPersone.xml");
+		String pathComuni = "xml/comuni.xml";
 		
+		/*persona = xml.readNextPersona();
+		persona = xml.readNextPersona();
+		persona = xml.readNextPersona();
+		persona = xml.readNextPersona();
+		System.out.println(persona.toString());
+		//codice = Comune.codByNome(persona.getComuneNascita(), comuni);
+		//System.out.println(codice);
+		persona = xml.readNextPersona();
+		System.out.println(persona.toString());
+		codice = Comune.codByNome(persona.getComuneNascita(), comuni);
+		System.out.println(codice);*/
 		
 		do {
-			System.out.println(xml.readNextPersona().toString());
+			persona = xml.readNextPersona();
+			codice = Comune.codByNome(persona.getComuneNascita(), pathComuni);
+			System.out.println(persona.toString());
+			System.out.println(codice);
+			
 		} while(true);
 
 

@@ -19,10 +19,10 @@ public class Comune {
 	}
 	
 	
-	public static String codByNome(String nome) {
-		XMLInputOutput inputCodice = new XMLInputOutput("xml/comuni.xml");
+	public static String codByNome(String nome, String pathComuni) {
+		XMLInputOutput inputComuni = new XMLInputOutput(pathComuni);
 		do {
-			Comune comuneLetto = inputCodice.readNextComune();
+			Comune comuneLetto = inputComuni.readNextComune();
 			if(comuneLetto.getNome().equals(nome)) return comuneLetto.getCodice();
 		} while(true);
 

@@ -109,7 +109,9 @@ public class XMLInputOutput {
     		}
 			do {
 				if(xmlStreamReader.hasNext()) lastEventType = xmlStreamReader.next();
-    			if(lastEventType == XMLEvent.START_ELEMENT || lastEventType == XMLEvent.END_ELEMENT) {
+				if(lastEventType == XMLEvent.END_DOCUMENT) return null;
+        		else {
+				if(lastEventType == XMLEvent.START_ELEMENT || lastEventType == XMLEvent.END_ELEMENT) {
         			read = xmlStreamReader.getName().toString();
         		} else  {
         			read = xmlStreamReader.getText().toString();
@@ -128,10 +130,10 @@ public class XMLInputOutput {
     					break;
     				}
     			}
-			} while(!((lastEventType == XMLEvent.END_ELEMENT || lastEventType == XMLEvent.END_DOCUMENT) && read.equals("persona")));
+        		}
+			} while(!((lastEventType == XMLEvent.END_ELEMENT || lastEventType == XMLEvent.END_DOCUMENT) && read.equals("comune")));
 			
 			return new Comune(nome, codice);
-			
 			} catch (XMLStreamException e) {
 				e.printStackTrace();
 			}
