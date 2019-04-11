@@ -107,6 +107,49 @@ public class XMLInputOutput {
     		} else  {
     			read = xmlStreamReader.getText().toString();
     		}
+    		do {
+    			if(xmlStreamReader.hasNext()) lastEventType = xmlStreamReader.next();
+    			if(lastEventType == XMLEvent.END_DOCUMENT) return null;
+    			else {
+    				if(lastEventType == XMLEvent.START_ELEMENT || lastEventType == XMLEvent.END_ELEMENT) {
+    					read = xmlStreamReader.getName().toString();
+    				} else  {
+    					read = xmlStreamReader.getText().toString();
+    				}
+    				
+    				if(lastEventType!=XMLEvent.END_ELEMENT) {
+    					switch(read) {
+    					case "nome":
+    						if(xmlStreamReader.hasNext()) lastEventType = xmlStreamReader.next();
+    						nome = xmlStreamReader.getText().toString();
+    						break;
+    						
+    					case "codice":
+    						if(xmlStreamReader.hasNext()) lastEventType = xmlStreamReader.next();
+    						codice = xmlStreamReader.getText().toString();
+    						break;
+    					}
+    				}
+    			}
+    		} while(!((lastEventType == XMLEvent.END_ELEMENT || lastEventType == XMLEvent.END_DOCUMENT) && read.equals("comune")));
+    		
+    		return new Comune(nome, codice);
+    	} catch (XMLStreamException e) {
+    		e.printStackTrace();
+    	}
+    	return null;
+    }
+    
+    
+    public String readNextCF() throws XMLStreamException {
+    	String codice = null;
+    		if(xmlStreamReader.hasNext()) lastEventType = xmlStreamReader.next();
+    		String read;
+    		if(lastEventType == XMLEvent.START_ELEMENT || lastEventType == XMLEvent.END_ELEMENT) {
+    			read = xmlStreamReader.getName().toString();
+    		} else  {
+    			read = xmlStreamReader.getText().toString();
+    		}
 			do {
 				if(xmlStreamReader.hasNext()) lastEventType = xmlStreamReader.next();
 				if(lastEventType == XMLEvent.END_DOCUMENT) return null;
@@ -119,11 +162,6 @@ public class XMLInputOutput {
     			
     			if(lastEventType!=XMLEvent.END_ELEMENT) {
     				switch(read) {
-    				case "nome":
-    					if(xmlStreamReader.hasNext()) lastEventType = xmlStreamReader.next();
-    					nome = xmlStreamReader.getText().toString();
-    					break;
-    					
     				case "codice":
     					if(xmlStreamReader.hasNext()) lastEventType = xmlStreamReader.next();
     					codice = xmlStreamReader.getText().toString();
@@ -131,13 +169,10 @@ public class XMLInputOutput {
     				}
     			}
         		}
-			} while(!((lastEventType == XMLEvent.END_ELEMENT || lastEventType == XMLEvent.END_DOCUMENT) && read.equals("comune")));
+			} while(!((lastEventType == XMLEvent.END_ELEMENT || lastEventType == XMLEvent.END_DOCUMENT) && read.equals("codice")));
 			
-			return new Comune(nome, codice);
-			} catch (XMLStreamException e) {
-				e.printStackTrace();
-			}
-		return null;
+			return codice;
     }
+    
 
 }
