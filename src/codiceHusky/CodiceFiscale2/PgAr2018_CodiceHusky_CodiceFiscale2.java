@@ -9,7 +9,7 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 		
 		Persona persona;
 		String codice;
-		XMLInputOutput xml = new XMLInputOutput("xml/inputPersone.xml");
+		XMLInput xml = new XMLInput("xml/inputPersone.xml");
 		String pathComuni = "xml/comuni.xml";
 		
 		/*persona = xml.readNextPersona();
@@ -43,7 +43,7 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 	
 	private String getCodiceErrato(String pathCF) throws XMLStreamException {
 		String codice = null;
-		XMLInputOutput inputCF = new XMLInputOutput(pathCF);
+		XMLInput inputCF = new XMLInput(pathCF);
 		do {
 			String CFLetto = inputCF.readNextCF();
 			if(!verificaCF(CFLetto)) return CFLetto;

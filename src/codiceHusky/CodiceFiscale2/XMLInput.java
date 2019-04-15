@@ -11,13 +11,13 @@ import javax.xml.stream.events.XMLEvent;
 import org.codehaus.stax2.XMLInputFactory2;
 import org.codehaus.stax2.XMLStreamReader2;
 
-public class XMLInputOutput {
+public class XMLInput {
 	private InputStream xmlInputStream;
 	private XMLInputFactory2 xmlInputFactory;
     private XMLStreamReader2 xmlStreamReader;
     int lastEventType;
     
-    public XMLInputOutput(String xmlFileName) {
+    public XMLInput(String xmlFileName) {
     	try {
     		xmlInputStream = new FileInputStream(xmlFileName);
 		} catch (FileNotFoundException e1) {
@@ -173,6 +173,7 @@ public class XMLInputOutput {
 			
 			return codice;
     }
+    
     
 
 }
