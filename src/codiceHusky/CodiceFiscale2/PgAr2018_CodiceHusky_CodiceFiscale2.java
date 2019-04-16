@@ -63,15 +63,18 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 		String data = persona.getDataNascita();
 		cognome = codiceCognome(cognome);
 		nome = codiceNome(nome);
+		data = getCodiceAnno(data);
 		System.out.println("______________________________");
 		System.out.println(String.format("Cognome %s -> %s", persona.getCognome(),cognome));
 		System.out.println(String.format("Nome %s -> %s", persona.getNome(),nome));
+		System.out.println(String.format("Data %s -> %s", persona.getDataNascita(),data));
+		
 		return "";
 	}
 	
 	private static boolean isVocale(char x) {
 		if(x=='A' || x=='E' || x=='I' || x=='O' || x =='U') return true;
-		else return false;
+		return false;
 	}
 
 
@@ -123,7 +126,7 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 			char x = nome.charAt(i);
 			if(!isVocale(x)) {
 				n_consonante++;
-				// se ci sono più di 3 consonanti nel nome salto la 2°
+				// se ci sono piï¿½ di 3 consonanti nel nome salto la 2ï¿½
 				if (consonanti>=4 && n_consonante==2) continue;
 				else {
 					memo = memo.concat(""+x);
@@ -150,4 +153,40 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 		
 		return memo;
 	}
+	public static String getCodiceAnno(String nascita){
+        String codice = "",anno,mese,giorno;
+        anno = nascita.substring(2, 4);
+        giorno = nascita.substring(8,10);
+        mese = nascita.substring(5,7);
+        switch(mese){
+            case "01":
+                mese = "A"; break;
+            case "02":
+                mese = "B"; break;
+            case "03":
+                mese = "C"; break;
+            case "04":
+                mese = "D"; break;
+            case "05":
+                mese = "E"; break;
+            case "06":
+                mese = "H"; break;
+            case "07":
+                mese = "L"; break;
+            case "08":
+                mese = "M"; break;
+            case "09":
+                mese = "P"; break;
+            case "10":
+                mese = "R"; break;
+            case "11":
+                mese = "S"; break;
+            case "12":
+                mese = "T"; break;
+            default:
+                mese =  "Z"; break;
+        }
+        codice = anno+mese+giorno;
+        return codice;
+    }
 }
