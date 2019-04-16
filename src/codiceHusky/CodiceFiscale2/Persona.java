@@ -1,13 +1,13 @@
 package codiceHusky.CodiceFiscale2;
 
 public class Persona {
-	int id;
-	String nome;
-	String cognome;
-	char sesso;
-	String comuneNascita;
-	String dataNascita;
-	String CodiceFiscale;
+	private int id;
+	private String nome;
+	private String cognome;
+	private char sesso;
+	private String comuneNascita;
+	private String dataNascita;
+	private String CodiceFiscale;
 	/**
 	 * @param nome
 	 * @param cognome
@@ -27,8 +27,6 @@ public class Persona {
 	/**
 	 * 
 	 */
-	public Persona() {
-	}
 
 	public int getId() {
 		return id;
