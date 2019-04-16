@@ -7,7 +7,6 @@ import javax.xml.stream.XMLStreamException;
 public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 		Scanner sc = new Scanner(System.in);
 		Persona persona;
 		String codice;
@@ -62,17 +61,25 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 		char sesso = persona.getSesso();
 		String comune = persona.getComuneNascita();
 		String data = persona.getDataNascita();
-		cognome = getTheCharCognome(cognome);
-		//cognome = getTheChar(cognome);
-		System.out.println(String.format("Nome %s -> %s", persona.getCognome(),cognome));
+		cognome = codiceCognome(cognome);
+		nome = codiceNome(nome);
+		System.out.println(String.format("Cognome %s -> %s", persona.getCognome(),cognome));
+		System.out.println(String.format("Nome %s -> %s", persona.getNome(),nome));
 		return "";
 	}
-	private static String getTheCharCognome(String cognome) {
+	
+	private static boolean isVocale(char x) {
+		if(x=='A' || x=='E' || x=='I' || x=='O' || x =='U') return true;
+		else return false;
+	}
+
+
+	private static String codiceCognome(String cognome) {
 		String memo = "";
 		int length = 0;
 		for(int i = 0; i<cognome.length();i++) {
 			char x = cognome.charAt(i);
-			if(x!='A' && x!='E' && x!='I' && x!='O' && x!='U') {
+			if(!isVocale(x)) {
 				memo = memo.concat(""+x);
 				length ++;
 			}
@@ -81,7 +88,54 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 		if(length != 3) {
 			for(int i = 0; i<cognome.length();i++) {
 				char x = cognome.charAt(i);
-				if(x=='A' || x=='E' || x=='I' || x=='O' || x =='U') {
+				if(isVocale(x)) {
+					String e = ""+x;
+					memo = memo.concat(e);
+					length ++;
+				}
+				if(length == 3) break;
+			}
+		}
+		for(int i=length;i<3;i++) {
+			memo = memo.concat("X");
+		}
+		
+		return memo;
+	}
+	
+	private static String codiceNome(String nome) {
+		String memo = "";
+		int length = 0;
+		int consonanti=0;
+		
+		// conto quante consonanti ci sono nel nome
+		for(int i = 0; i<nome.length();i++) {
+			char x = nome.charAt(i);
+			if(!isVocale(x)) {
+				consonanti++;
+			}
+			if(consonanti == 4) break;
+		}
+		
+		int n_consonante=0;
+		for(int i = 0; i<nome.length();i++) {
+			char x = nome.charAt(i);
+			if(!isVocale(x)) {
+				n_consonante++;
+				// se ci sono più di 3 consonanti nel nome salto la 2°
+				if (consonanti>=4 && n_consonante==2) continue;
+				else {
+					memo = memo.concat(""+x);
+					length ++;
+				}
+			}
+			if(length == 3) break;
+		}
+		
+		if(length != 3) {
+			for(int i = 0; i<nome.length();i++) {
+				char x = nome.charAt(i);
+				if(isVocale(x)) {
 					String e = ""+x;
 					memo = memo.concat(e);
 					length ++;
