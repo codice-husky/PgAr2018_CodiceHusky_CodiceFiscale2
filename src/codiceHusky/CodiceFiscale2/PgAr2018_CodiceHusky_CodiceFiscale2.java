@@ -55,7 +55,7 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 	private static boolean verificaCF(String CF) {
 		return true;
 	}
-	private static String calcolaCodice(Persona persona,String pathComuni) {
+	private static String calcolaCodice(Persona persona,String pathComuni) throws DatiNonValidiException {
 		String nome = persona.getNome();
 		String cognome = persona.getCognome();
 		char sesso = persona.getSesso();
@@ -65,7 +65,7 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 		nome = codiceNome(nome);
 		data = codiceAnno(data,sesso);
 		comune = Comune.codByNome(persona.getComuneNascita(), pathComuni);
-		if(comune == null) {} //lanciare eccezzione
+		if(comune == null) throw new DatiNonValidiException();
 		System.out.println("______________________________");
 		System.out.println(String.format("Cognome %s -> %s", persona.getCognome(),cognome));
 		System.out.println(String.format("Nome %s -> %s", persona.getNome(),nome));
@@ -155,7 +155,7 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 		
 		return memo;
 	}
-	public static String codiceAnno(String nascita,char sesso){
+	public static String codiceAnno(String nascita,char sesso) throws DatiNonValidiException{
         String codice = "",anno,mese,giorno;
         anno = nascita.substring(2, 4);
         giorno = nascita.substring(8,10);
@@ -165,8 +165,7 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
         		getG = getG +40;
         		giorno = ""+getG;
         	}
-        }else { //lanciare eccezzione
-        	}
+        }else throw new DatiNonValidiException();
         mese = nascita.substring(5,7);
         switch(mese){
             case "01":
@@ -194,8 +193,7 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
             case "12":
                 mese = "T"; break;
             default: 
-               //lanciare eccezzione
-            break;
+               throw new DatiNonValidiException();
         }
         codice = anno+mese+giorno;
         return codice;
