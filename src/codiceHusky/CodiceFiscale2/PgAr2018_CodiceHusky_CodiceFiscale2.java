@@ -29,8 +29,12 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 		do {
 			persona = xml.readNextPersona();
 			if(persona!=null) {
+				try {
 				codice = calcolaCodice(persona,pathComuni);
-				codice = Comune.codByNome(persona.getComuneNascita(), pathComuni);
+				}catch(DatiNonValidiException ex) {
+					codice =  ex.getError();
+				}
+				//codice = Comune.codByNome(persona.getComuneNascita(), pathComuni);
 				//System.out.println(persona.toString());
 				//System.out.println(codice);
 			} else return;
@@ -56,22 +60,26 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 		return true;
 	}
 	private static String calcolaCodice(Persona persona,String pathComuni) throws DatiNonValidiException {
-		String nome = persona.getNome();
-		String cognome = persona.getCognome();
-		char sesso = persona.getSesso();
-		String comune = persona.getComuneNascita();
-		String data = persona.getDataNascita();
-		cognome = codiceCognome(cognome);
-		nome = codiceNome(nome);
-		data = codiceAnno(data,sesso);
-		comune = Comune.codByNome(persona.getComuneNascita(), pathComuni);
-		if(comune == null) throw new DatiNonValidiException();
-		System.out.println("______________________________");
-		System.out.println(String.format("Cognome %s -> %s", persona.getCognome(),cognome));
-		System.out.println(String.format("Nome %s -> %s", persona.getNome(),nome));
-		System.out.println(String.format("Data %s -> %s", persona.getDataNascita(),data));
-		System.out.println(String.format("Comune %s -> %s",persona.getComuneNascita(),comune));
-		return "";
+			String codice = "";
+			String nome = persona.getNome();
+			String cognome = persona.getCognome();
+			char sesso = persona.getSesso();
+			String comune = persona.getComuneNascita();
+			String data = persona.getDataNascita();
+			cognome = codiceCognome(cognome);
+			nome = codiceNome(nome);
+			data = codiceAnno(data,sesso);
+			comune = Comune.codByNome(persona.getComuneNascita(), pathComuni);
+			if(comune == null) throw new DatiNonValidiException();
+			String semiCodice = cognome+nome+data+comune;
+			codice = semiCodice+getControllo(semiCodice);
+			System.out.println("______________________________");
+			System.out.println(String.format("Cognome %s -> %s", persona.getCognome(),cognome));
+			System.out.println(String.format("Nome %s -> %s", persona.getNome(),nome));
+			System.out.println(String.format("Data %s -> %s", persona.getDataNascita(),data));
+			System.out.println(String.format("Comune %s -> %s",persona.getComuneNascita(),comune));
+			System.out.println(codice);
+		return codice;
 	}
 	
 	private static boolean isVocale(char x) {
@@ -198,4 +206,27 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
         codice = anno+mese+giorno;
         return codice;
     }
+	private static String getControllo(String semiCodice) { //prima lettera, terza lettera ecc.
+		char caratteri[]= {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'};
+		int sommaDispari[]= {1,0,5,7,9,13,15,17,19,21,1,0,5,7,9,13,15,17,19,21,2,4,18,20,11,3,6,8,12,14,16,10,22,25,24,23};
+		int sommaPari[]= {0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25};
+		String finale = "";
+		int somma = 0;
+		for(int i=1;i<=semiCodice.length();i++){
+			char lettera = semiCodice.charAt(i-1); /*i-1 perchè il charAt
+			parte da 0 mentre il conteggio delle lettere parte da 1 */
+			for(int k=0;k<caratteri.length;k++) {
+				if(lettera == caratteri[k]) {
+					if(i%2!=0) { //prima lettera, terza lettera ecc.
+						somma +=sommaDispari[k];
+						
+					}else { //seconda lettera, quarta lettera ecc.
+						somma +=sommaPari[k];
+					}
+				}
+			}
+		}
+		finale = ""+((char)((somma%26)+65)); //si basa sul codice ASCII
+		return finale;
+	}
 }
