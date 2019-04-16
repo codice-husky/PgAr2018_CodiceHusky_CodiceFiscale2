@@ -90,9 +90,9 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 			}
 		}
 		for(int i=length;i<3;i++) {
-			String theX = "X";
-			memo.concat(theX);
+			memo = memo.concat("X");
 		}
-			return memo;
+		
+		return memo;
 	}
 }
