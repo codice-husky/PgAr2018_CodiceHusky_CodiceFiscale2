@@ -27,9 +27,46 @@ public class XMLOutput {
 		}
     }
     
-    public void writeNumPersone(int num) {
+    public void openPersone(int num) {
 		try {
 			xmlWriter.writeStartElement("persone");
+			xmlWriter.writeAttribute("numero", Integer.toString(num));
+		} catch (XMLStreamException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+    
+    public void openCodici() {
+    	try {
+    		xmlWriter.writeStartElement("codici");
+    	} catch (XMLStreamException e) {
+    		// TODO Auto-generated catch block
+    		e.printStackTrace();
+    	}
+    }
+    public void openCodInvalidi(int num) {
+    	try {
+    		xmlWriter.writeStartElement("invalidi");
+    		xmlWriter.writeAttribute("numero", Integer.toString(num));
+    	} catch (XMLStreamException e) {
+    		// TODO Auto-generated catch block
+    		e.printStackTrace();
+    	}
+    }
+    
+    public void closeOnce() {
+    	try {
+			xmlWriter.writeEndElement();
+		} catch (XMLStreamException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+    
+    public void openCodSpaiati(int num) {
+		try {
+			xmlWriter.writeStartElement("spaiati");
 			xmlWriter.writeAttribute("numero", Integer.toString(num));
 		} catch (XMLStreamException e) {
 			// TODO Auto-generated catch block
@@ -65,10 +102,11 @@ public class XMLOutput {
 		}
     }
     
-    public void close() {
+    public void closeAll() {
     	try {
 			xmlWriter.writeEndElement();
 			xmlWriter.writeEndElement();
+			xmlWriter.writeEndDocument();
 		} catch (XMLStreamException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
