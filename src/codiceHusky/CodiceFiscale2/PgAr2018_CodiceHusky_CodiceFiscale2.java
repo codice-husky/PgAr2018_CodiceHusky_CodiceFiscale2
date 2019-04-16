@@ -29,7 +29,7 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 		do {
 			persona = xml.readNextPersona();
 			if(persona!=null) {
-				codice = calcolaCodice(persona);
+				codice = calcolaCodice(persona,pathComuni);
 				codice = Comune.codByNome(persona.getComuneNascita(), pathComuni);
 				//System.out.println(persona.toString());
 				//System.out.println(codice);
@@ -55,7 +55,7 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 	private static boolean verificaCF(String CF) {
 		return true;
 	}
-	private static String calcolaCodice(Persona persona) {
+	private static String calcolaCodice(Persona persona,String pathComuni) {
 		String nome = persona.getNome();
 		String cognome = persona.getCognome();
 		char sesso = persona.getSesso();
@@ -63,12 +63,14 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 		String data = persona.getDataNascita();
 		cognome = codiceCognome(cognome);
 		nome = codiceNome(nome);
-		data = getCodiceAnno(data);
+		data = codiceAnno(data,sesso);
+		comune = Comune.codByNome(persona.getComuneNascita(), pathComuni);
+		if(comune == null) {} //lanciare eccezzione
 		System.out.println("______________________________");
 		System.out.println(String.format("Cognome %s -> %s", persona.getCognome(),cognome));
 		System.out.println(String.format("Nome %s -> %s", persona.getNome(),nome));
 		System.out.println(String.format("Data %s -> %s", persona.getDataNascita(),data));
-		
+		System.out.println(String.format("Comune %s -> %s",persona.getComuneNascita(),comune));
 		return "";
 	}
 	
@@ -153,10 +155,18 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 		
 		return memo;
 	}
-	public static String getCodiceAnno(String nascita){
+	public static String codiceAnno(String nascita,char sesso){
         String codice = "",anno,mese,giorno;
         anno = nascita.substring(2, 4);
         giorno = nascita.substring(8,10);
+        if(sesso == 'M' || sesso == 'F') {
+        	if(sesso == 'F') {
+        		int getG = Integer.parseInt(giorno);
+        		getG = getG +40;
+        		giorno = ""+getG;
+        	}
+        }else { //lanciare eccezzione
+        	}
         mese = nascita.substring(5,7);
         switch(mese){
             case "01":
@@ -183,8 +193,9 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
                 mese = "S"; break;
             case "12":
                 mese = "T"; break;
-            default:
-                mese =  "Z"; break;
+            default: 
+               //lanciare eccezzione
+            break;
         }
         codice = anno+mese+giorno;
         return codice;
