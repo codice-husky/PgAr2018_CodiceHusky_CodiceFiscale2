@@ -63,6 +63,7 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 		String data = persona.getDataNascita();
 		cognome = codiceCognome(cognome);
 		nome = codiceNome(nome);
+		System.out.println("______________________________");
 		System.out.println(String.format("Cognome %s -> %s", persona.getCognome(),cognome));
 		System.out.println(String.format("Nome %s -> %s", persona.getNome(),nome));
 		return "";
