@@ -7,6 +7,7 @@ public class Persona {
 	char sesso;
 	String comuneNascita;
 	String dataNascita;
+	String CodiceFiscale;
 	/**
 	 * @param nome
 	 * @param cognome
@@ -75,6 +76,14 @@ public class Persona {
 
 	public void setDataNascita(String dataNascita) {
 		this.dataNascita = dataNascita;
+	}
+
+	public String getCodiceFiscale() {
+		return CodiceFiscale;
+	}
+
+	public void setCodiceFiscale(String codiceFiscale) {
+		CodiceFiscale = codiceFiscale;
 	}
 
 	@Override
