@@ -93,7 +93,7 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 		int length = 0;
 		for(int i = 0; i<cognome.length();i++) {
 			char x = cognome.charAt(i);
-			if(!isVocale(x)) {
+			if(!isVocale(x) && x!=(char)39 && x!=' ') {
 				memo = memo.concat(""+x);
 				length ++;
 			}
@@ -102,7 +102,7 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 		if(length != 3) {
 			for(int i = 0; i<cognome.length();i++) {
 				char x = cognome.charAt(i);
-				if(isVocale(x)) {
+				if(isVocale(x) && x!=(char)39 && x!=' ') {
 					String e = ""+x;
 					memo = memo.concat(e);
 					length ++;
@@ -125,7 +125,7 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 		// conto quante consonanti ci sono nel nome
 		for(int i = 0; i<nome.length();i++) {
 			char x = nome.charAt(i);
-			if(!isVocale(x)) {
+			if(!isVocale(x) && x!=(char)39 && x!=' ') {
 				consonanti++;
 			}
 			if(consonanti == 4) break;
@@ -134,7 +134,7 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 		int n_consonante=0;
 		for(int i = 0; i<nome.length();i++) {
 			char x = nome.charAt(i);
-			if(!isVocale(x)) {
+			if(!isVocale(x) && x!=(char)39 && x!=' ') {
 				n_consonante++;
 				// se ci sono pi� di 3 consonanti nel nome salto la 2�
 				if (consonanti>=4 && n_consonante==2) continue;
@@ -149,7 +149,7 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 		if(length != 3) {
 			for(int i = 0; i<nome.length();i++) {
 				char x = nome.charAt(i);
-				if(isVocale(x)) {
+				if(isVocale(x) && x!=(char)39 && x!=' ') {
 					String e = ""+x;
 					memo = memo.concat(e);
 					length ++;
