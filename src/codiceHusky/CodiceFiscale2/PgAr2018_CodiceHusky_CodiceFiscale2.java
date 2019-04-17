@@ -237,7 +237,7 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 	 * @param codice 	E' il codice fiscale da verificare
 	 * @return			true se è corretto, altrimenti false
 	 * */
-	public boolean controlloCodice(String codice) {
+	public static boolean controlloCodice(String codice) {
 		//se la lunghezza non è 16 allora è sbagliato
 		if(codice.length()!=16) {			
 			return false;
@@ -267,13 +267,13 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 		}
 	}
 	
-	public boolean letteraCorretta(char x) {
+	public static boolean letteraCorretta(char x) {
 		if(Character.isLetter(x) && Character.isUpperCase(x)) return true;
 		return false;
 	}
 	
 	
-	public boolean lettereOrdine(String sub) {
+	public static boolean lettereOrdine(String sub) {
         boolean corretto = true;
         for(int i=0;i<3;i++){
             char x = sub.charAt(i);
