@@ -287,23 +287,39 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 	 * */
 	public static boolean controlloCodice(String codice) {
 		//se la lunghezza non è 16 allora è sbagliato
+                char mesi[]={'A','B','C','D','E','H','L','M','P','R','S','T'};
+                int giorni[]={31,28,31,30,31,30,31,31,30,31,30,31};
+                boolean trov = false; //viene utilizzato per verificare che il mese sia tra
+                                      //uno dei valori accettabili
 		if(codice.length()!=16) {			
 			return false;
 		}else {
 			int memo;
 			if(!lettereOrdine(codice.substring(0,3))) return false; //cognome
 			if(!lettereOrdine(codice.substring(3,6))) return false; //nome
-			try {
+			try {//se da un errore allora non è un numero
 				memo = Integer.parseInt(codice.substring(6,8)); //anno
 			}catch(NumberFormatException e) {
 				return false; //se da errore allora è sbagliato tutto
 			}
 			if(!letteraCorretta(codice.charAt(8)))return false; //mese
-			try {
+			try {//se da un errore allora non è un numero
 				memo = Integer.parseInt(codice.substring(9,11)); //giorno
 			}catch(NumberFormatException e) {
 				return false;
 			}
+                        if(memo > 32) return false;
+                        else{
+                           char mese= codice.charAt(8); //recupera il mese
+                           for(int i=0;i<12;i++){
+                               if(mese == mesi[i]){
+                                   trov = true;
+                                   if((memo>giorni[i] && memo<41)||(memo>(giorni[i]+40)))
+                                   break;
+                               }
+                           }
+                           if(!trov) return false; //se trov è falso il mese nel CF è sbagliato
+                        }
 			if(!letteraCorretta(codice.charAt(11))) return false; //lettera comune
 			try {
 				memo = Integer.parseInt(codice.substring(12,15)); //numero comune
@@ -311,11 +327,16 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 				return false;
 			}
 			if(!letteraCorretta(codice.charAt(15))) return false; //codice di controllo
-			return true;
+			//se arriva qui allora il codice di controllo è una lettera, allora bisogna verificare
+                        String subStringa = codice.substring(0,15);
+                        String controllo = getControllo(subStringa);
+                        if(!controllo.equals(codice.charAt(15))) return false; 
+                        return true;
 		}
 	}
-	
-	public static boolean letteraCorretta(char x) {
+    
+    
+    public static boolean letteraCorretta(char x) {
 		if(Character.isLetter(x) && Character.isUpperCase(x)) return true;
 		return false;
 	}
@@ -330,7 +351,7 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
                     
                     for(int j = i+1;j<3;j++){
                         char y = sub.charAt(j);
-                        if(y != 'A'&& y != 'E'&& y != 'I'&& y != 'O'&& y != 'U'){
+                        if(y != 'A'&& y != 'E'&& y != 'I'&& y != 'O'&& y != 'U' && y!='X'){
                             corretto = false;
                             break;
                         }
@@ -343,6 +364,5 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
             }
         }
         return corretto;
-	}
-	
+	}	
 }
