@@ -72,7 +72,7 @@ public class Persona {
 	 * @return 		restituisce il codice fiscale di quella persona
 	 * */
 	public String getCodiceFiscale() {
-		return CodiceFiscale;
+		return codiceFiscale;
 	}
 	/**
 	 * Setter dell'attributo id 
@@ -121,7 +121,7 @@ public class Persona {
 	 * @param codiceFiscale    il codice fiscale della persona
 	 * */
 	public void setCodiceFiscale(String codiceFiscale) {
-		CodiceFiscale = codiceFiscale;
+		this.codiceFiscale = codiceFiscale;
 	}
 	/**
 	 * Override del metodo già esistente toString per visualizzare 
