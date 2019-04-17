@@ -7,8 +7,8 @@ import javax.xml.stream.XMLStreamException;
 public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 
 	public static void main(String[] args) {
-		XMLOutput output = new XMLOutput("xml/codiciPersone.xml");
-		XMLOutput outputCF = new XMLOutput("xml/CFBuffer.xml");
+		XMLOutput output = new XMLOutput("xml/codiciPersone.xml", false);
+		XMLOutput outputCF = new XMLOutput("xml/CFBuffer.xml", true);
 		Scanner sc = new Scanner(System.in);
 		Persona persona;
 		String codice;
@@ -76,6 +76,7 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 		output.openCodSpaiati(0);
 		createCodiciSpaiati(output);
 		output.closeOnce();
+		output.closeOnce();
 		output.closeAll();
 		
 		//System.out.println(persona.toString());
@@ -96,9 +97,11 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 						String codiceGenerato = null;
 						boolean codValido = false;
 						do {
-							codiceGenerato = xmlCodiciGenerati.readNextCF();
-							if(codiceGenerato!=null) {
-								if(codDaControllare.equals(codiceGenerato)) codValido = true;
+							do {
+								codiceGenerato = xmlCodiciGenerati.readNextCF();
+							} while(codiceGenerato==null);
+								if(codDaControllare.equals(codiceGenerato)) {
+									codValido = true;
 								
 							}
 						} while(codiceGenerato!=null);

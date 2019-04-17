@@ -7,17 +7,21 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import com.sun.xml.txw2.output.IndentingXMLStreamWriter;
+
 public class XMLOutput {
 	XMLOutputFactory outputFactory;
 	XMLStreamWriter xmlWriter;
+	XMLStreamWriter xmlIdentingWriter;
 
-    public XMLOutput(String path) {
+    public XMLOutput(String path, boolean isBuffer) {
     	try {
         	outputFactory = XMLOutputFactory.newInstance();
         	xmlWriter = outputFactory.createXMLStreamWriter(new FileOutputStream(path), "utf-8");
-			xmlWriter.writeStartDocument("utf-8", "1.0");
+        	xmlIdentingWriter = new IndentingXMLStreamWriter(xmlWriter);
+			xmlIdentingWriter.writeStartDocument("utf-8", "1.0");
 			
-			xmlWriter.writeStartElement("output");
+			if(!isBuffer) xmlIdentingWriter.writeStartElement("output");
 		} catch (XMLStreamException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -29,8 +33,8 @@ public class XMLOutput {
     
     public void openPersone(int num) {
 		try {
-			xmlWriter.writeStartElement("persone");
-			xmlWriter.writeAttribute("numero", Integer.toString(num));
+			xmlIdentingWriter.writeStartElement("persone");
+			xmlIdentingWriter.writeAttribute("numero", Integer.toString(num));
 		} catch (XMLStreamException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -39,7 +43,7 @@ public class XMLOutput {
     
     public void openCodici() {
     	try {
-    		xmlWriter.writeStartElement("codici");
+    		xmlIdentingWriter.writeStartElement("codici");
     	} catch (XMLStreamException e) {
     		// TODO Auto-generated catch block
     		e.printStackTrace();
@@ -47,8 +51,8 @@ public class XMLOutput {
     }
     public void openCodInvalidi(int num) {
     	try {
-    		xmlWriter.writeStartElement("invalidi");
-    		xmlWriter.writeAttribute("numero", Integer.toString(num));
+    		xmlIdentingWriter.writeStartElement("invalidi");
+    		xmlIdentingWriter.writeAttribute("numero", Integer.toString(num));
     	} catch (XMLStreamException e) {
     		// TODO Auto-generated catch block
     		e.printStackTrace();
@@ -57,7 +61,7 @@ public class XMLOutput {
     
     public void closeOnce() {
     	try {
-			xmlWriter.writeEndElement();
+			xmlIdentingWriter.writeEndElement();
 		} catch (XMLStreamException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -66,8 +70,8 @@ public class XMLOutput {
     
     public void openCodSpaiati(int num) {
 		try {
-			xmlWriter.writeStartElement("spaiati");
-			xmlWriter.writeAttribute("numero", Integer.toString(num));
+			xmlIdentingWriter.writeStartElement("spaiati");
+			xmlIdentingWriter.writeAttribute("numero", Integer.toString(num));
 		} catch (XMLStreamException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -76,15 +80,15 @@ public class XMLOutput {
     
     public void writePersona(Persona persona) {
     	try {
-    		xmlWriter.writeStartElement("persona");
-			xmlWriter.writeAttribute("id", Integer.toString(persona.getId()));
+    		xmlIdentingWriter.writeStartElement("persona");
+			xmlIdentingWriter.writeAttribute("id", Integer.toString(persona.getId()));
 			writeElement("nome", persona.getNome());
 	    	writeElement("cognome", persona.getCognome());
 	    	writeElement("sesso", Character.toString(persona.getSesso()));
 	    	writeElement("comune_nascita", persona.getComuneNascita());
 	    	writeElement("data_nascita", persona.getDataNascita());
 	    	writeElement("codice_fiscale", persona.getCodiceFiscale());
-	    	xmlWriter.writeEndElement();
+	    	xmlIdentingWriter.writeEndElement();
 		} catch (XMLStreamException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -93,9 +97,9 @@ public class XMLOutput {
     
     public void writeElement(String name, String value) {
     	try {
-    		xmlWriter.writeStartElement(name);
-			xmlWriter.writeCharacters(value);
-			xmlWriter.writeEndElement();
+    		xmlIdentingWriter.writeStartElement(name);
+			xmlIdentingWriter.writeCharacters(value);
+			xmlIdentingWriter.writeEndElement();
 		} catch (XMLStreamException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -104,10 +108,9 @@ public class XMLOutput {
     
     public void closeAll() {
     	try {
-			xmlWriter.writeEndElement();
-			xmlWriter.writeEndElement();
-			xmlWriter.writeEndDocument();
-			xmlWriter.close();
+			xmlIdentingWriter.writeEndElement();
+			xmlIdentingWriter.writeEndDocument();
+			xmlIdentingWriter.close();
 		} catch (XMLStreamException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -116,7 +119,7 @@ public class XMLOutput {
     
     public void closePersona() {
     	try {
-			xmlWriter.writeEndElement();
+			xmlIdentingWriter.writeEndElement();
 		} catch (XMLStreamException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
