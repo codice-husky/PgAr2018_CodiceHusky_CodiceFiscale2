@@ -7,7 +7,7 @@ public class Persona {
 	private char sesso;
 	private String comuneNascita;
 	private String dataNascita;
-	private String CodiceFiscale;
+	private String codiceFiscale;
 	/**
 	 * @param nome
 	 * @param cognome
@@ -15,13 +15,14 @@ public class Persona {
 	 * @param comuneNascita
 	 * @param dataNascita
 	 */
-	public Persona(int id, String nome, String cognome, char sesso, String comuneNascita, String dataNascita) {
+	public Persona(int id, String nome, String cognome, char sesso, String comuneNascita, String dataNascita, String codiceFiscale) {
 		this.id = id;
 		this.nome = nome;
 		this.cognome = cognome;
 		this.sesso = sesso;
 		this.comuneNascita = comuneNascita;
 		this.dataNascita = dataNascita;
+		this.codiceFiscale = codiceFiscale;
 	}
 	
 	/**
