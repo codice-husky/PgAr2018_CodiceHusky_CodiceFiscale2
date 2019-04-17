@@ -330,7 +330,7 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 			//se arriva qui allora il codice di controllo è una lettera, allora bisogna verificare
                         String subStringa = codice.substring(0,15);
                         String controllo = getControllo(subStringa);
-                        if(!controllo.equals(codice.charAt(15))) return false; 
+                        if(!controllo.equals(""+codice.charAt(15))) return false; 
                         return true;
 		}
 	}
