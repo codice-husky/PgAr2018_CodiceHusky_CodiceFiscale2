@@ -308,13 +308,13 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 			}catch(NumberFormatException e) {
 				return false;
 			}
-                        if(memo > 32) return false;
+                        if(memo > 71) return false;
                         else{
                            char mese= codice.charAt(8); //recupera il mese
                            for(int i=0;i<12;i++){
                                if(mese == mesi[i]){
                                    trov = true;
-                                   if((memo>giorni[i] && memo<41)||(memo>(giorni[i]+40)))
+                                   if((memo>giorni[i] && memo<41)||(memo>(giorni[i]+40))) return false;
                                    break;
                                }
                            }
