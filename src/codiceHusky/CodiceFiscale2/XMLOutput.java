@@ -107,6 +107,16 @@ public class XMLOutput {
 			xmlWriter.writeEndElement();
 			xmlWriter.writeEndElement();
 			xmlWriter.writeEndDocument();
+			xmlWriter.close();
+		} catch (XMLStreamException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+    
+    public void closePersona() {
+    	try {
+			xmlWriter.writeEndElement();
 		} catch (XMLStreamException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
