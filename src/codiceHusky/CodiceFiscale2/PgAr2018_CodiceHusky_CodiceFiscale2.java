@@ -229,6 +229,50 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 		finale = ""+((char)((somma%26)+65)); //si basa sul codice ASCII
 		return finale;
 	}
+	/**
+	 * Questo metodo data una stringa(ovvero il codice fiscale) dice se
+	 * è corretto o meno controllando le varie parti che compongono il
+	 * codice fiscale, se almeno uno dei casi è sbagliato/da errore
+	 * allora tutto il codice è errato
+	 * @param codice 	E' il codice fiscale da verificare
+	 * @return			true se è corretto, altrimenti false
+	 * */
+	public boolean controlloCodice(String codice) {
+		//se la lunghezza non è 16 allora è sbagliato
+		if(codice.length()!=16) {			
+			return false;
+		}else {
+			int memo;
+			if(!lettereOrdine(codice.substring(0,3))) return false; //cognome
+			if(!lettereOrdine(codice.substring(3,6))) return false; //nome
+			try {
+				memo = Integer.parseInt(codice.substring(6,8)); //anno
+			}catch(NumberFormatException e) {
+				return false; //se da errore allora è sbagliato tutto
+			}
+			if(!letteraCorretta(codice.charAt(8)))return false; //mese
+			try {
+				memo = Integer.parseInt(codice.substring(9,11)); //giorno
+			}catch(NumberFormatException e) {
+				return false;
+			}
+			if(!letteraCorretta(codice.charAt(11))) return false; //lettera comune
+			try {
+				memo = Integer.parseInt(codice.substring(12,15)); //numero comune
+			}catch(NumberFormatException e) {
+				return false;
+			}
+			if(!letteraCorretta(codice.charAt(15))) return false; //codice di controllo
+			return true;
+		}
+	}
+	
+	public boolean letteraCorretta(char x) {
+		if(Character.isLetter(x) && Character.isUpperCase(x)) return true;
+		return false;
+	}
+	
+	
 	public boolean lettereOrdine(String sub) {
         boolean corretto = true;
         for(int i=0;i<3;i++){
