@@ -3,7 +3,19 @@ package codiceHusky.CodiceFiscale2;
 import java.io.File;
 import java.util.Scanner;
 
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.xml.sax.InputSource;
 
 public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 
@@ -15,6 +27,8 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 		String codice;
 		String codDaControllare = null;
 		int nCodiciInvalidi = 0;
+		int nCodiciSpaiati = 0;
+		int nPersone = 0;
 		XMLInput xml = new XMLInput("xml/inputPersone.xml");
 		String pathComuni = "xml/comuni.xml";
 		String cmnd = "";
@@ -44,6 +58,7 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 				persona.setCodiceFiscale(codice);
 				output.writePersona(persona);
 				outputCF.writeElement("codice", codice);
+				nPersone++;
 				
 				//codice = Comune.codByNome(persona.getComuneNascita(), pathComuni);
 				//System.out.println(persona.toString());
@@ -75,16 +90,51 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 		output.closeOnce();
 		
 		output.openCodSpaiati(0);
-		createCodiciSpaiati(output);
+		nCodiciSpaiati = createCodiciSpaiati(output);
 		output.closeOnce();
 		output.closeOnce();
 		output.closeAll();
 		
 		//System.out.println(persona.toString());
+		
+		caricaNumeroElementi(nPersone, nCodiciInvalidi, nCodiciSpaiati);
 
 	}
 	
-	private static void createCodiciSpaiati(XMLOutput output) {
+	private static void caricaNumeroElementi(int persone, int invalidi, int spaiati) {
+		String inputFile = "xml/codiciPersone.xml";
+		String outputFile = "xml/codiciPersone.xml";
+		
+		try {
+			Document doc = DocumentBuilderFactory.newInstance()
+		            .newDocumentBuilder().parse(new InputSource(inputFile));
+
+		XPath xpath = XPathFactory.newInstance().newXPath();
+		Node nodo = (Node)xpath.evaluate("//persone/@numero",
+		                                          doc, XPathConstants.NODE);
+		nodo.setNodeValue(Integer.toString(persone));
+		
+		xpath = XPathFactory.newInstance().newXPath();
+		nodo = (Node)xpath.evaluate("//invalidi/@numero",
+		                                          doc, XPathConstants.NODE);
+		nodo.setNodeValue(Integer.toString(invalidi));
+		
+		xpath = XPathFactory.newInstance().newXPath();
+		nodo = (Node)xpath.evaluate("//spaiati/@numero",
+		                                          doc, XPathConstants.NODE);
+		nodo.setNodeValue(Integer.toString(spaiati));
+
+		Transformer xformer = TransformerFactory.newInstance().newTransformer();
+		xformer.transform(new DOMSource(doc), new StreamResult(new File(outputFile)));
+		} catch(Exception e) {
+			
+		}
+		
+	    
+	}
+	
+	
+	private static int createCodiciSpaiati(XMLOutput output) {
 		XMLInput xmlCodici = new XMLInput("xml/codiciFiscali.xml");
 		String codDaControllare = null;
 		int codiciSpaiati = 0;
@@ -115,6 +165,8 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 				e.printStackTrace();
 			}
 		} while(codDaControllare!=null);
+		
+		return codiciSpaiati;
 	}
 	
 	

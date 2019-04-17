@@ -2,10 +2,19 @@ package codiceHusky.CodiceFiscale2;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+
+import org.w3c.dom.Attr;
+import org.xml.sax.InputSource;
 
 import com.sun.xml.txw2.output.IndentingXMLStreamWriter;
 
@@ -13,8 +22,10 @@ public class XMLOutput {
 	XMLOutputFactory outputFactory;
 	XMLStreamWriter xmlWriter;
 	XMLStreamWriter xmlIdentingWriter;
+	String path;
 
     public XMLOutput(String path, boolean isBuffer) {
+    	this.path = path;
     	try {
         	outputFactory = XMLOutputFactory.newInstance();
         	xmlWriter = outputFactory.createXMLStreamWriter(new FileOutputStream(path), "utf-8");
@@ -111,6 +122,7 @@ public class XMLOutput {
 			xmlIdentingWriter.writeEndElement();
 			xmlIdentingWriter.writeEndDocument();
 			xmlIdentingWriter.close();
+			xmlWriter.close();
 		} catch (XMLStreamException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -120,6 +132,51 @@ public class XMLOutput {
     public void closePersona() {
     	try {
 			xmlIdentingWriter.writeEndElement();
+		} catch (XMLStreamException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+    
+    /*public void setNumeroPersone(int num) {
+    	XPathFactory factory = XPathFactory.newInstance();
+        XPath xPath = factory.newXPath();
+
+        Attr result;
+		try {
+			XPathExpression expr = xPath.compile("//persone/@numero");
+			expr.evaluate(outputFactory, XPathConstants.STRING);
+			result.setValue(Integer.toString(num));
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }*/
+    
+    public void setNumeroCodici(String tipoCodice, int num) {
+    	XPathFactory factory = XPathFactory.newInstance();
+        XPath xPath = factory.newXPath();
+
+        Attr result;
+		try {
+			result = (Attr) xPath.evaluate("/output/codici/"+tipoCodice+"/@numero", new InputSource(
+			    new FileReader(path)), XPathConstants.NODE);
+			result.setValue(Integer.toString(num));
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+    
+    public void closeFile() {
+    	try {
+			xmlIdentingWriter.close();
 		} catch (XMLStreamException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
