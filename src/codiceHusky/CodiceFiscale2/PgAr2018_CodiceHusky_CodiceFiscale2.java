@@ -1,5 +1,6 @@
 package codiceHusky.CodiceFiscale2;
 
+import java.io.File;
 import java.util.Scanner;
 
 import javax.xml.stream.XMLStreamException;
@@ -86,8 +87,7 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 	private static void createCodiciSpaiati(XMLOutput output) {
 		XMLInput xmlCodici = new XMLInput("xml/codiciFiscali.xml");
 		String codDaControllare = null;
-		
-		
+		int codiciSpaiati = 0;
 		do {
 			try {
 				codDaControllare = xmlCodici.readNextCF();
@@ -97,17 +97,17 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 						String codiceGenerato = null;
 						boolean codValido = false;
 						do {
-							do {
-								codiceGenerato = xmlCodiciGenerati.readNextCF();
-							} while(codiceGenerato==null);
+							codiceGenerato = xmlCodiciGenerati.readNextCF();
 								if(codDaControllare.equals(codiceGenerato)) {
 									codValido = true;
 								
 							}
 						} while(codiceGenerato!=null);
 						
-						if(!codValido) output.writeElement("codice", codDaControllare);
-						
+						if(!codValido) {
+							output.writeElement("codice", codDaControllare);
+							codiciSpaiati++;
+						}
 					}
 				}
 			} catch (XMLStreamException e) {

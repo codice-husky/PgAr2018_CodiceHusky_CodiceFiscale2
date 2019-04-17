@@ -2,6 +2,7 @@ package codiceHusky.CodiceFiscale2;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 
 import javax.xml.stream.XMLInputFactory;
@@ -178,6 +179,14 @@ public class XMLInput {
 			return codice;
     }
     
+    public void close() {
+    	try {
+			xmlInputStream.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
     
 
 }
