@@ -7,7 +7,8 @@ import javax.xml.stream.XMLStreamException;
 public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 
 	public static void main(String[] args) {
-		XMLOutput output = new XMLOutput("xml/output.xml");
+		XMLOutput output = new XMLOutput("xml/codiciPersone.xml");
+		XMLOutput outputCF = new XMLOutput("xml/CFBuffer.xml");
 		Scanner sc = new Scanner(System.in);
 		Persona persona;
 		String codice;
@@ -30,6 +31,7 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 		codice = Comune.codByNome(persona.getComuneNascita(), comuni);
 		System.out.println(codice);*/
 		output.openPersone(0);
+		outputCF.openCodici();
 		do {
 			persona = xml.readNextPersona();
 			if(persona!=null) {
@@ -40,6 +42,7 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 				}
 				persona.setCodiceFiscale(codice);
 				output.writePersona(persona);
+				outputCF.writeElement("codice", codice);
 				
 				//codice = Comune.codByNome(persona.getComuneNascita(), pathComuni);
 				//System.out.println(persona.toString());
@@ -48,6 +51,7 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 		} while(persona!=null);
 		
 		output.closePersona();
+		outputCF.closeAll();
 		
 		XMLInput xmlCodici = new XMLInput("xml/codiciFiscali.xml");
 		output.openCodici();
@@ -68,10 +72,46 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 			}
 		} while(codDaControllare!=null);
 		output.closeOnce();
+		
+		output.openCodSpaiati(0);
+		createCodiciSpaiati(output);
+		output.closeOnce();
 		output.closeAll();
 		
 		//System.out.println(persona.toString());
 
+	}
+	
+	private static void createCodiciSpaiati(XMLOutput output) {
+		XMLInput xmlCodici = new XMLInput("xml/codiciFiscali.xml");
+		String codDaControllare = null;
+		
+		
+		do {
+			try {
+				codDaControllare = xmlCodici.readNextCF();
+				if(codDaControllare!=null) {
+					if(controlloCodice(codDaControllare)) {
+						XMLInput xmlCodiciGenerati = new XMLInput("xml/CFBuffer.xml");
+						String codiceGenerato = null;
+						boolean codValido = false;
+						do {
+							codiceGenerato = xmlCodiciGenerati.readNextCF();
+							if(codiceGenerato!=null) {
+								if(codDaControllare.equals(codiceGenerato)) codValido = true;
+								
+							}
+						} while(codiceGenerato!=null);
+						
+						if(!codValido) output.writeElement("codice", codDaControllare);
+						
+					}
+				}
+			} catch (XMLStreamException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} while(codDaControllare!=null);
 	}
 	
 	
@@ -101,12 +141,12 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 			if(comune == null) throw new DatiNonValidiException();
 			String semiCodice = cognome+nome+data+comune;
 			codice = semiCodice+getControllo(semiCodice);
-			System.out.println("______________________________");
+			/*System.out.println("______________________________");
 			System.out.println(String.format("Cognome %s -> %s", persona.getCognome(),cognome));
 			System.out.println(String.format("Nome %s -> %s", persona.getNome(),nome));
 			System.out.println(String.format("Data %s -> %s", persona.getDataNascita(),data));
 			System.out.println(String.format("Comune %s -> %s",persona.getComuneNascita(),comune));
-			System.out.println(codice);
+			System.out.println(codice);*/
 			if(!verificaEsistenzaCodice(codice)) throw new DatiNonValidiException();
 		return codice;
 	}

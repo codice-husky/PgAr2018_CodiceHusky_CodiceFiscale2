@@ -36,7 +36,7 @@ public class XMLInput {
     
     public Persona readNextPersona() {
     	int idPersona = 0;
-    	String nomePersona = null, cognomePersona = null, comuneNascita = null, dataNascita = null;
+    	String nomePersona = null, cognomePersona = null, comuneNascita = null, dataNascita = null, codiceFiscale = null;
     	char sessoPersona = 0;
     	try {
     		if(xmlStreamReader.hasNext()) lastEventType = xmlStreamReader.next();
@@ -83,12 +83,16 @@ public class XMLInput {
     					if(xmlStreamReader.hasNext()) lastEventType = xmlStreamReader.next();
     					dataNascita = xmlStreamReader.getText().toString();
     					break;
+    				case "codice_fiscale":
+    					if(xmlStreamReader.hasNext()) lastEventType = xmlStreamReader.next();
+    					codiceFiscale = xmlStreamReader.getText().toString();
+    					break;
     				}
     			}
         		}
     		} while(!(lastEventType == XMLEvent.END_ELEMENT && read.equals("persona")));
     		
-    		return new Persona(idPersona, nomePersona, cognomePersona, sessoPersona, comuneNascita, dataNascita);
+    		return new Persona(idPersona, nomePersona, cognomePersona, sessoPersona, comuneNascita, dataNascita, codiceFiscale);
     	} catch (XMLStreamException e) {
     		e.printStackTrace();
     	}
