@@ -39,20 +39,20 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 		XMLInput xml = new XMLInput(PATH_INPUT_PERSONE_XML);
 		output.openPersone(0);
 		outputCF.openCodici();
-		do {
+		do {														//DA QUI
 			persona = xml.readNextPersona();
 			if(persona!=null) {
 				try {
 				codice = calcolaCodice(persona,PATH_COMUNI_XML);
-				}catch(DatiNonValidiException ex) {
-					codice =  ex.getError();
-				}
+				}catch(DatiNonValidiException ex) {					//Lettura delle persone nel file XML e creazione del relativo CF.
+					codice =  ex.getError();						//Se il codice non esiste si inserisce "ASSENTE" [getError()]
+				}													//Viene anche incrementato il contatore delle persone presenti.
 				persona.setCodiceFiscale(codice);
 				output.writePersona(persona);
 				outputCF.writeElement("codice", codice);
 				nPersone++;
 			}
-		} while(persona!=null);
+		} while(persona!=null);										//A QUI
 		
 		output.closeOnce();
 		outputCF.closeAll();
@@ -61,26 +61,26 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 		output.openCodici();
 		output.openCodInvalidi(0);
 		
-		do {
+		do {														//DA QUI
 			codDaControllare = xmlCodici.readNextCF();
 			if(codDaControllare!=null) {
 				if(!controlloCodice(codDaControllare)) {
-					nCodiciInvalidi++;
+					nCodiciInvalidi++;								//Controllo e copia dei CF invalidi.
 					output.writeElement("codice", codDaControllare);
 				}
 			}
-		} while(codDaControllare!=null);
+		} while(codDaControllare!=null);							//A QUI
 		output.closeOnce();
 		
 		output.openCodSpaiati(0);
-		nCodiciSpaiati = createCodiciSpaiati(output);
+		nCodiciSpaiati = createCodiciSpaiati(output);				//Copia dei CF spaiati
 		output.closeOnce();
 		output.closeOnce();
 		output.closeAll();
 		
 		//System.out.println(persona.toString());
 		
-		caricaNumeroElementi(nPersone, nCodiciInvalidi, nCodiciSpaiati);
+		caricaNumeroElementi(nPersone, nCodiciInvalidi, nCodiciSpaiati);	//Scrive il numero di elementi nell'XML
 
 	}
 	
@@ -92,8 +92,8 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 			Document doc = DocumentBuilderFactory.newInstance()
 		            .newDocumentBuilder().parse(new InputSource(inputFile));
 
-		XPath xpath = XPathFactory.newInstance().newXPath();
-		Node nodo = (Node)xpath.evaluate(XPATH_PERSONE_NUMERO,
+		XPath xpath = XPathFactory.newInstance().newXPath();					//Cerca gli elementi tramite un'espressione xPath
+		Node nodo = (Node)xpath.evaluate(XPATH_PERSONE_NUMERO,					//E sostituisce il valore con quello passato dal main
 		                                          doc, XPathConstants.NODE);
 		nodo.setNodeValue(Integer.toString(persone));
 		
@@ -107,7 +107,7 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 		                                          doc, XPathConstants.NODE);
 		nodo.setNodeValue(Integer.toString(spaiati));
 
-		Transformer xformer = TransformerFactory.newInstance().newTransformer();
+		Transformer xformer = TransformerFactory.newInstance().newTransformer();		//Riscrive il file con le modifiche
 		xformer.transform(new DOMSource(doc), new StreamResult(new File(outputFile)));
 		} catch(Exception e) {
 			
@@ -121,10 +121,10 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 		XMLInput xmlCodici = new XMLInput(PATH_CODICI_FISCALI_XML);
 		String codDaControllare = null;
 		int codiciSpaiati = 0;
-		do {
-			codDaControllare = xmlCodici.readNextCF();
-			if(codDaControllare!=null) {
-				if(controlloCodice(codDaControllare)) {
+		do {																		//Legge i codici dal file CF e li confronta
+			codDaControllare = xmlCodici.readNextCF();								//con quelli presenti nel buffer.
+			if(codDaControllare!=null) {											//Se il CF non esiste viene aggiunto
+				if(controlloCodice(codDaControllare)) {								//all'elenco dei codici spaiati.
 					XMLInput xmlCodiciGenerati = new XMLInput(PATH_CF_BUFFER_XML);
 					String codiceGenerato = null;
 					boolean codValido = false;
