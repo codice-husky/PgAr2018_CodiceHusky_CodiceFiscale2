@@ -28,10 +28,8 @@ public class XMLOutput {
 			
 			if(!isBuffer) xmlIdentingWriter.writeStartElement("output");
 		} catch (XMLStreamException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     }
@@ -45,7 +43,6 @@ public class XMLOutput {
 			xmlIdentingWriter.writeStartElement("persone");
 			xmlIdentingWriter.writeAttribute("numero", Integer.toString(num));
 		} catch (XMLStreamException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     }
@@ -57,7 +54,6 @@ public class XMLOutput {
     	try {
     		xmlIdentingWriter.writeStartElement("codici");
     	} catch (XMLStreamException e) {
-    		// TODO Auto-generated catch block
     		e.printStackTrace();
     	}
     }
@@ -71,7 +67,6 @@ public class XMLOutput {
     		xmlIdentingWriter.writeStartElement("invalidi");
     		xmlIdentingWriter.writeAttribute("numero", Integer.toString(num));
     	} catch (XMLStreamException e) {
-    		// TODO Auto-generated catch block
     		e.printStackTrace();
     	}
     }
@@ -97,7 +92,6 @@ public class XMLOutput {
 			xmlIdentingWriter.writeStartElement("spaiati");
 			xmlIdentingWriter.writeAttribute("numero", Integer.toString(num));
 		} catch (XMLStreamException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     }
@@ -118,7 +112,6 @@ public class XMLOutput {
 	    	writeElement("codice_fiscale", persona.getCodiceFiscale());
 	    	xmlIdentingWriter.writeEndElement();
 		} catch (XMLStreamException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     }
@@ -134,7 +127,6 @@ public class XMLOutput {
 			xmlIdentingWriter.writeCharacters(value);
 			xmlIdentingWriter.writeEndElement();
 		} catch (XMLStreamException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     }
@@ -149,7 +141,6 @@ public class XMLOutput {
 			xmlIdentingWriter.close();
 			xmlWriter.close();
 		} catch (XMLStreamException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     }
@@ -162,7 +153,6 @@ public class XMLOutput {
     	try {
 			xmlIdentingWriter.close();
 		} catch (XMLStreamException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     }

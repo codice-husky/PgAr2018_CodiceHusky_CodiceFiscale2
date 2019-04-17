@@ -38,6 +38,11 @@ public class XMLInput {
 		}
     }
     
+    
+    /*Il concetto è uguale per tutte le varianti. Non è possibile creare un metodo richiamabile causa mini modifiche specifiche per ogni caso.
+     * Il parser legge elemento per elemento (\n inclusi) e, in base all'elemento letto (switch), esegue una deerminata operazione.
+     * Sembra brutto e lo è, ma non ho trovato un metodo più snello per gestirlo. Funziona.
+     */
     /**
      * Legge la persona successiva all'interno del file
      * @return Oggetto Persona
