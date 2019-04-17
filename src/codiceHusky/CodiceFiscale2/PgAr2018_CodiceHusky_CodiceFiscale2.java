@@ -229,4 +229,28 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 		finale = ""+((char)((somma%26)+65)); //si basa sul codice ASCII
 		return finale;
 	}
+	public boolean lettereOrdine(String sub) {
+        boolean corretto = true;
+        for(int i=0;i<3;i++){
+            char x = sub.charAt(i);
+            if(Character.isLetter(x) && Character.isUpperCase(x)){
+                if((x == 'A'|| x == 'E'|| x == 'I'|| x == 'O'|| x == 'U') && i!=2){
+                    
+                    for(int j = i+1;j<3;j++){
+                        char y = sub.charAt(j);
+                        if(y != 'A'&& y != 'E'&& y != 'I'&& y != 'O'&& y != 'U'){
+                            corretto = false;
+                            break;
+                        }
+                    }
+                }
+                if(!corretto) break;
+            }else{
+                corretto = false;
+                break;
+            }
+        }
+        return corretto;
+	}
+	
 }
