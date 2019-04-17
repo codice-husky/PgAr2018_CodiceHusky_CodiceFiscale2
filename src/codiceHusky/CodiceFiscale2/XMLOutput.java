@@ -138,42 +138,6 @@ public class XMLOutput {
 		}
     }
     
-    /*public void setNumeroPersone(int num) {
-    	XPathFactory factory = XPathFactory.newInstance();
-        XPath xPath = factory.newXPath();
-
-        Attr result;
-		try {
-			XPathExpression expr = xPath.compile("//persone/@numero");
-			expr.evaluate(outputFactory, XPathConstants.STRING);
-			result.setValue(Integer.toString(num));
-		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    }*/
-    
-    public void setNumeroCodici(String tipoCodice, int num) {
-    	XPathFactory factory = XPathFactory.newInstance();
-        XPath xPath = factory.newXPath();
-
-        Attr result;
-		try {
-			result = (Attr) xPath.evaluate("/output/codici/"+tipoCodice+"/@numero", new InputSource(
-			    new FileReader(path)), XPathConstants.NODE);
-			result.setValue(Integer.toString(num));
-		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    }
-    
     public void closeFile() {
     	try {
 			xmlIdentingWriter.close();

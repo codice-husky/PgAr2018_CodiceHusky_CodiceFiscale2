@@ -18,6 +18,11 @@ public class XMLInput {
     private XMLStreamReader2 xmlStreamReader;
     int lastEventType;
     
+    /**
+     * Crea un oggetto di tipo XMLInput utilizzabile per leggere dati da file XML.
+     * Usa StAX
+     * @param xmlFileName Indirizzo del file da aprire
+     */
     public XMLInput(String xmlFileName) {
     	try {
     		xmlInputStream = new FileInputStream(xmlFileName);
@@ -35,6 +40,10 @@ public class XMLInput {
 		}
     }
     
+    /**
+     * Legge la persona successiva all'interno del file
+     * @return Oggetto Persona
+     */
     public Persona readNextPersona() {
     	int idPersona = 0;
     	String nomePersona = null, cognomePersona = null, comuneNascita = null, dataNascita = null, codiceFiscale = null;
@@ -101,7 +110,10 @@ public class XMLInput {
     }
     
     
-    
+    /**
+     * Legge il comune successivo dal file
+     * @return Oggetto comune
+     */
     public Comune readNextComune() {
     	String nome = null, codice = null;
     	try {
@@ -145,7 +157,11 @@ public class XMLInput {
     	return null;
     }
     
-    
+    /**
+     * Legge il Codice Fiscale successivo
+     * @return Stringa contenente il Codice Fiscale
+     * @throws XMLStreamException
+     */
     public String readNextCF() throws XMLStreamException {
     	String codice = null;
     		if(xmlStreamReader.hasNext()) lastEventType = xmlStreamReader.next();

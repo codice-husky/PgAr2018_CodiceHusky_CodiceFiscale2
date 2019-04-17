@@ -19,9 +19,20 @@ import org.xml.sax.InputSource;
 
 public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 
+	//XPath
+	private static final String XPATH_SPAIATI_NUMERO = "//spaiati/@numero";
+	private static final String XPATH_INVALIDI_NUMERO = "//invalidi/@numero";
+	private static final String XPATH_PERSONE_NUMERO = "//persone/@numero";
+	//Path file I/O
+	private static final String PATH_CODICI_FISCALI_XML = "xml/codiciFiscali.xml";
+	private static final String PATH_COMUNI_XML = "xml/comuni.xml";
+	private static final String PATH_INPUT_PERSONE_XML = "xml/inputPersone.xml";
+	private static final String PATH_CF_BUFFER_XML = "xml/CFBuffer.xml";
+	private static final String PATH_CODICI_PERSONE_XML = "xml/codiciPersone.xml";
+
 	public static void main(String[] args) {
-		XMLOutput output = new XMLOutput("xml/codiciPersone.xml", false);
-		XMLOutput outputCF = new XMLOutput("xml/CFBuffer.xml", true);
+		XMLOutput output = new XMLOutput(PATH_CODICI_PERSONE_XML, false);	//Inizializzazioni varie
+		XMLOutput outputCF = new XMLOutput(PATH_CF_BUFFER_XML, true);
 		Scanner sc = new Scanner(System.in);
 		Persona persona;
 		String codice;
@@ -29,29 +40,17 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 		int nCodiciInvalidi = 0;
 		int nCodiciSpaiati = 0;
 		int nPersone = 0;
-		XMLInput xml = new XMLInput("xml/inputPersone.xml");
-		String pathComuni = "xml/comuni.xml";
+		XMLInput xml = new XMLInput(PATH_INPUT_PERSONE_XML);
 		String cmnd = "";
 		String nome, cognome,sesso;
 		boolean end = false;
-		/*persona = xml.readNextPersona();
-		persona = xml.readNextPersona();
-		persona = xml.readNextPersona();
-		persona = xml.readNextPersona();
-		System.out.println(persona.toString());
-		//codice = Comune.codByNome(persona.getComuneNascita(), comuni);
-		//System.out.println(codice);
-		persona = xml.readNextPersona();
-		System.out.println(persona.toString());
-		codice = Comune.codByNome(persona.getComuneNascita(), comuni);
-		System.out.println(codice);*/
 		output.openPersone(0);
 		outputCF.openCodici();
 		do {
 			persona = xml.readNextPersona();
 			if(persona!=null) {
 				try {
-				codice = calcolaCodice(persona,pathComuni);
+				codice = calcolaCodice(persona,PATH_COMUNI_XML);
 				}catch(DatiNonValidiException ex) {
 					codice =  ex.getError();
 				}
@@ -59,17 +58,13 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 				output.writePersona(persona);
 				outputCF.writeElement("codice", codice);
 				nPersone++;
-				
-				//codice = Comune.codByNome(persona.getComuneNascita(), pathComuni);
-				//System.out.println(persona.toString());
-				//System.out.println(codice);
 			}
 		} while(persona!=null);
 		
 		output.closePersona();
 		outputCF.closeAll();
 		
-		XMLInput xmlCodici = new XMLInput("xml/codiciFiscali.xml");
+		XMLInput xmlCodici = new XMLInput(PATH_CODICI_FISCALI_XML);
 		output.openCodici();
 		output.openCodInvalidi(0);
 		
@@ -102,25 +97,25 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 	}
 	
 	private static void caricaNumeroElementi(int persone, int invalidi, int spaiati) {
-		String inputFile = "xml/codiciPersone.xml";
-		String outputFile = "xml/codiciPersone.xml";
+		String inputFile = PATH_CODICI_PERSONE_XML;
+		String outputFile = PATH_CODICI_PERSONE_XML;
 		
 		try {
 			Document doc = DocumentBuilderFactory.newInstance()
 		            .newDocumentBuilder().parse(new InputSource(inputFile));
 
 		XPath xpath = XPathFactory.newInstance().newXPath();
-		Node nodo = (Node)xpath.evaluate("//persone/@numero",
+		Node nodo = (Node)xpath.evaluate(XPATH_PERSONE_NUMERO,
 		                                          doc, XPathConstants.NODE);
 		nodo.setNodeValue(Integer.toString(persone));
 		
 		xpath = XPathFactory.newInstance().newXPath();
-		nodo = (Node)xpath.evaluate("//invalidi/@numero",
+		nodo = (Node)xpath.evaluate(XPATH_INVALIDI_NUMERO,
 		                                          doc, XPathConstants.NODE);
 		nodo.setNodeValue(Integer.toString(invalidi));
 		
 		xpath = XPathFactory.newInstance().newXPath();
-		nodo = (Node)xpath.evaluate("//spaiati/@numero",
+		nodo = (Node)xpath.evaluate(XPATH_SPAIATI_NUMERO,
 		                                          doc, XPathConstants.NODE);
 		nodo.setNodeValue(Integer.toString(spaiati));
 
@@ -135,7 +130,7 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 	
 	
 	private static int createCodiciSpaiati(XMLOutput output) {
-		XMLInput xmlCodici = new XMLInput("xml/codiciFiscali.xml");
+		XMLInput xmlCodici = new XMLInput(PATH_CODICI_FISCALI_XML);
 		String codDaControllare = null;
 		int codiciSpaiati = 0;
 		do {
@@ -143,7 +138,7 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 				codDaControllare = xmlCodici.readNextCF();
 				if(codDaControllare!=null) {
 					if(controlloCodice(codDaControllare)) {
-						XMLInput xmlCodiciGenerati = new XMLInput("xml/CFBuffer.xml");
+						XMLInput xmlCodiciGenerati = new XMLInput(PATH_CF_BUFFER_XML);
 						String codiceGenerato = null;
 						boolean codValido = false;
 						do {
@@ -161,7 +156,6 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 					}
 				}
 			} catch (XMLStreamException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		} while(codDaControllare!=null);
@@ -196,18 +190,12 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 			if(comune == null) throw new DatiNonValidiException();
 			String semiCodice = cognome+nome+data+comune;
 			codice = semiCodice+getControllo(semiCodice);
-			/*System.out.println("______________________________");
-			System.out.println(String.format("Cognome %s -> %s", persona.getCognome(),cognome));
-			System.out.println(String.format("Nome %s -> %s", persona.getNome(),nome));
-			System.out.println(String.format("Data %s -> %s", persona.getDataNascita(),data));
-			System.out.println(String.format("Comune %s -> %s",persona.getComuneNascita(),comune));
-			System.out.println(codice);*/
 			if(!verificaEsistenzaCodice(codice)) throw new DatiNonValidiException();
 		return codice;
 	}
 	
 	private static boolean verificaEsistenzaCodice(String codice) {
-		XMLInput xmlCodici = new XMLInput("xml/codiciFiscali.xml");
+		XMLInput xmlCodici = new XMLInput(PATH_CODICI_FISCALI_XML);
 		boolean trovato = false;
 		String codEstratto = null;
 		do {
@@ -217,7 +205,6 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 					if(codice.equalsIgnoreCase(codEstratto)) trovato = true;
 				}
 			} catch (XMLStreamException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		} while(codEstratto!=null);
@@ -349,120 +336,135 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
         codice = anno+mese+giorno;
         return codice;
     }
-	private static String getControllo(String semiCodice) { //prima lettera, terza lettera ecc.
-		char caratteri[]= {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'};
-		int sommaDispari[]= {1,0,5,7,9,13,15,17,19,21,1,0,5,7,9,13,15,17,19,21,2,4,18,20,11,3,6,8,12,14,16,10,22,25,24,23};
-		int sommaPari[]= {0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25};
-		String finale = "";
-		int somma = 0;
-		for(int i=1;i<=semiCodice.length();i++){
-			char lettera = semiCodice.charAt(i-1); /*i-1 perchè il charAt
-			parte da 0 mentre il conteggio delle lettere parte da 1 */
-			for(int k=0;k<caratteri.length;k++) {
-				if(lettera == caratteri[k]) {
-					if(i%2!=0) { //prima lettera, terza lettera ecc.
-						somma +=sommaDispari[k];
-						
-					}else { //seconda lettera, quarta lettera ecc.
-						somma +=sommaPari[k];
-					}
-				}
-			}
-		}
-		finale = ""+((char)((somma%26)+65)); //si basa sul codice ASCII
-		return finale;
-	}
 	/**
-	 * Questo metodo data una stringa(ovvero il codice fiscale) dice se
-	 * è corretto o meno controllando le varie parti che compongono il
-	 * codice fiscale, se almeno uno dei casi è sbagliato/da errore
-	 * allora tutto il codice è errato
-	 * @param codice 	E' il codice fiscale da verificare
-	 * @return			true se è corretto, altrimenti false
-	 * */
-	public static boolean controlloCodice(String codice) {
-		//se la lunghezza non è 16 allora è sbagliato
-                char mesi[]={'A','B','C','D','E','H','L','M','P','R','S','T'};
-                int giorni[]={31,28,31,30,31,30,31,31,30,31,30,31};
+	 *Metodo che calcola il codice di controllo basandosi  sul resto della stringa
+	 * @param semiCodice        E' il CF, senza il codice di controllo
+	 * @return finale           il codice di controllo
+	 */
+	 private static String getControllo(String semiCodice) {
+	        //--------------------------------------
+	                //il codice di controllo associa ad ogni lettera/numero un valore siccome conosco
+	                //quanti sono abbiamo optato per un array
+	                char caratteri[]= {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'};
+	        int sommaDispari[]= {1,0,5,7,9,13,15,17,19,21,1,0,5,7,9,13,15,17,19,21,2,4,18,20,11,3,6,8,12,14,16,10,22,25,24,23};
+	        int sommaPari[]= {0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25};
+	        //----------------------------------
+	                String finale = "";
+	        int somma = 0;
+	        for(int i=1;i<=semiCodice.length();i++){
+	            char lettera = semiCodice.charAt(i-1); /*i-1 perchè il charAt
+	            parte da 0 mentre il conteggio delle lettere parte da 1 */
+	            for(int k=0;k<caratteri.length;k++) {
+	                if(lettera == caratteri[k]) {
+	                    if(i%2!=0) { //prima lettera, terza lettera ecc.
+	                        somma +=sommaDispari[k];
+	                       
+	                    }else { //seconda lettera, quarta lettera ecc.
+	                        somma +=sommaPari[k];
+	                    }
+	                }
+	            }
+	        }
+	        finale = ""+((char)((somma%26)+65)); //si basa sul codice ASCII
+	        return finale;
+	    }
+	
+	
+	/**
+     * Questo metodo data una stringa(ovvero il codice fiscale) dice se
+     * è corretto o meno controllando le varie parti che compongono il
+     * codice fiscale, se almeno uno dei casi è sbagliato/da errore
+     * allora tutto il codice è errato
+     * @param codice    E' il codice fiscale da verificare
+     * @return      true se è corretto, altrimenti false
+     * */
+    public static boolean controlloCodice(String codice) {
+                char mesi[]={'A','B','C','D','E','H','L','M','P','R','S','T'};//array dei mesi
+                int giorni[]={31,28,31,30,31,30,31,31,30,31,30,31}; //numero giorni per mese
                 boolean trov = false; //viene utilizzato per verificare che il mese sia tra
                                       //uno dei valori accettabili
-		if(codice.length()!=16) {			
-			return false;
-		}else {
-			int memo;
-			if(!lettereOrdine(codice.substring(0,3))) return false; //cognome
-			if(!lettereOrdine(codice.substring(3,6))) return false; //nome
-			try {//se da un errore allora non è un numero
-				memo = Integer.parseInt(codice.substring(6,8)); //anno
-			}catch(NumberFormatException e) {
-				return false; //se da errore allora è sbagliato tutto
-			}
-			if(!letteraCorretta(codice.charAt(8)))return false; //mese
-			try {//se da un errore allora non è un numero
-				memo = Integer.parseInt(codice.substring(9,11)); //giorno
-			}catch(NumberFormatException e) {
-				return false;
-			}
-                        if(memo > 71) return false;
+        if(codice.length()!=16) {//se la lunghezza non è 16 allora è sbagliato           
+            return false;
+        }else {
+            int memo;
+            if(!lettereOrdine(codice.substring(0,3))) return false; // controllo sul cognome
+            if(!lettereOrdine(codice.substring(3,6))) return false; // controllo sul nome
+            try {//se da un errore allora non è un numero
+                memo = Integer.parseInt(codice.substring(6,8)); //controllo sul anno
+            }catch(NumberFormatException e) {
+                return false;
+            }
+            if(!letteraCorretta(codice.charAt(8)))return false; //controllo sul mese
+            try {//se da un errore allora non è un numero
+                memo = Integer.parseInt(codice.substring(9,11)); //controllo sul giorno
+            }catch(NumberFormatException e) {
+                return false;
+            }
+                        if(memo > 71) return false; //in un mese al massimo ci sono 31 giorni(71 per le donne)
                         else{
-                           char mese= codice.charAt(8); //recupera il mese
+                           char mese= codice.charAt(8); //recupera il mese dal CF
                            for(int i=0;i<12;i++){
-                               if(mese == mesi[i]){
+                               if(mese == mesi[i]){ //se esiste un accoppiamento mese-lettera
                                    trov = true;
                                    if((memo>giorni[i] && memo<41)||(memo>(giorni[i]+40))) return false;
-                                   break;
-                               }
+                                   break;//se è un numero compreso tra il numero di giorni del mese per i
+                               }//maschi e 41(minimo per le donne) o oltre il numero dei giorni del mese
+                                //+40(donne) che è uguale ad avere un 32 marzo allora è sbagliato
                            }
                            if(!trov) return false; //se trov è falso il mese nel CF è sbagliato
                         }
-			if(!letteraCorretta(codice.charAt(11))) return false; //lettera comune
-			try {
-				memo = Integer.parseInt(codice.substring(12,15)); //numero comune
-			}catch(NumberFormatException e) {
-				return false;
-			}
-			if(!letteraCorretta(codice.charAt(15))) return false; //codice di controllo
-			//se arriva qui allora il codice di controllo è una lettera, allora bisogna verificare
+            if(!letteraCorretta(codice.charAt(11))) return false; //lettera del comune
+            try {//se da errore non è un numero
+                memo = Integer.parseInt(codice.substring(12,15)); //numero del comune
+            }catch(NumberFormatException e) {
+                return false;
+            }
+            if(!letteraCorretta(codice.charAt(15))) return false; //codice di controllo
+            //se arriva qui allora il codice di controllo è una lettera, allora bisogna verificare
                         String subStringa = codice.substring(0,15);
                         String controllo = getControllo(subStringa);
-                        if(!controllo.equals(""+codice.charAt(15))) return false; 
+                        if(!controllo.equals(""+codice.charAt(15))) return false; //se quello teorico
+                        //e quello effettivo sono diversi allora è sbagliato
                         return true;
-		}
-	}
+        }
+    }
     
-    
+    /**
+    * Controlla se una lettera è sia maiuscola che una lettera in se
+    * @return       true se è così,false altrimenti
+    */
     public static boolean letteraCorretta(char x) {
 		if(Character.isLetter(x) && Character.isUpperCase(x)) return true;
 		return false;
 	}
 	
-	/**
-	 * Questo metodo viene utilizzato per verificare il corretto ordinamento
-	 * delle lettere del cognome o del nome nel codice fiscale, ovvero
-	 * prima le consonanti poi le vocali ed infine le x
-	 * */
-	public static boolean lettereOrdine(String sub) {
-        boolean corretto = true;
+    /**
+     * Questo metodo viene utilizzato per verificare il corretto ordinamento
+     * delle lettere del cognome o del nome nel codice fiscale, ovvero
+     * prima le consonanti poi le vocali ed infine le eventuali x
+         * @param sub       Sono le 3 lettere che compongono il nome/cognome nel CF
+         * @return          true se è corretto, false se qualcosa è errato
+     * */
+    public static boolean lettereOrdine(String sub) {
+    	boolean corretto = true;
         for(int i=0;i<3;i++){ //cicla sulle 3 lettere che compongono il cognome/nome
             char x = sub.charAt(i); //prende una lettera
-            if(Character.isLetter(x) && Character.isUpperCase(x)){ //controlla sia che ci
-            						//siano solo lettere e che siano maiuscole
+            if(Character.isLetter(x) && Character.isUpperCase(x)){ //controlla che
+                            //si solo una lettera e che sia maiuscola
                 if((x == 'A'|| x == 'E'|| x == 'I'|| x == 'O'|| x == 'U') && i!=2){
-                    //da qui controlla se ci 
+                    //qui controlla se dopo una vocale ci siano solo altre vocali o x
                     for(int j = i+1;j<3;j++){
                         char y = sub.charAt(j);
                         if(y != 'A'&& y != 'E'&& y != 'I'&& y != 'O'&& y != 'U' && y!='X'){
-                            corretto = false;
-                            break;
+                            return false;
                         }
                     }
                 }
-                if(!corretto) break;
+                if(!corretto) return false;
             }else{
-                corretto = false;
-                break;
+                return false;
             }
         }
-        return corretto;
-	}	
+        return true;
+    }
 }
