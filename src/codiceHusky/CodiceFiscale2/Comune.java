@@ -4,8 +4,9 @@ public class Comune {
 	private String nome;
 	private String codice;
 	/**
-	 * @param come
-	 * @param codice
+	 * Crea un nuovo oggetto di tipo Comune
+	 * @param nome Nome del comune
+	 * @param codice Codice del comune
 	 */
 	public Comune(String nome, String codice) {
 		this.nome = nome;

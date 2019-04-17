@@ -27,7 +27,6 @@ public class XMLInput {
     	try {
     		xmlInputStream = new FileInputStream(xmlFileName);
 		} catch (FileNotFoundException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
         xmlInputFactory = (XMLInputFactory2)XMLInputFactory.newInstance();
@@ -35,7 +34,6 @@ public class XMLInput {
 			xmlStreamReader = (XMLStreamReader2) xmlInputFactory.createXMLStreamReader(xmlInputStream);
 			lastEventType = xmlStreamReader.getEventType();
 		} catch (XMLStreamException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     }
@@ -160,10 +158,10 @@ public class XMLInput {
     /**
      * Legge il Codice Fiscale successivo
      * @return Stringa contenente il Codice Fiscale
-     * @throws XMLStreamException
      */
-    public String readNextCF() throws XMLStreamException {
+    public String readNextCF() {
     	String codice = null;
+    	try {
     		if(xmlStreamReader.hasNext()) lastEventType = xmlStreamReader.next();
     		String read;
     		if(lastEventType == XMLEvent.START_ELEMENT || lastEventType == XMLEvent.END_ELEMENT) {
@@ -193,13 +191,19 @@ public class XMLInput {
 			} while(!((lastEventType == XMLEvent.END_ELEMENT || lastEventType == XMLEvent.END_DOCUMENT) && read.equals("codice")));
 			
 			return codice;
+    	} catch (Exception e) {
+    		
+    	}
+		return codice;
     }
     
+    /**
+     * Chiude lo stream. Non sono sicuro che serva a qualcosa
+     */
     public void close() {
     	try {
 			xmlInputStream.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     }

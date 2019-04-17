@@ -1,10 +1,7 @@
 package codiceHusky.CodiceFiscale2;
 
 import java.io.File;
-import java.util.Scanner;
-
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -33,7 +30,6 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 	public static void main(String[] args) {
 		XMLOutput output = new XMLOutput(PATH_CODICI_PERSONE_XML, false);	//Inizializzazioni varie
 		XMLOutput outputCF = new XMLOutput(PATH_CF_BUFFER_XML, true);
-		Scanner sc = new Scanner(System.in);
 		Persona persona;
 		String codice;
 		String codDaControllare = null;
@@ -41,9 +37,6 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 		int nCodiciSpaiati = 0;
 		int nPersone = 0;
 		XMLInput xml = new XMLInput(PATH_INPUT_PERSONE_XML);
-		String cmnd = "";
-		String nome, cognome,sesso;
-		boolean end = false;
 		output.openPersone(0);
 		outputCF.openCodici();
 		do {
@@ -61,7 +54,7 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 			}
 		} while(persona!=null);
 		
-		output.closePersona();
+		output.closeOnce();
 		outputCF.closeAll();
 		
 		XMLInput xmlCodici = new XMLInput(PATH_CODICI_FISCALI_XML);
@@ -69,17 +62,12 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 		output.openCodInvalidi(0);
 		
 		do {
-			try {
-				codDaControllare = xmlCodici.readNextCF();
-				if(codDaControllare!=null) {
-					if(!controlloCodice(codDaControllare)) {
-						nCodiciInvalidi++;
-						output.writeElement("codice", codDaControllare);
-					}
+			codDaControllare = xmlCodici.readNextCF();
+			if(codDaControllare!=null) {
+				if(!controlloCodice(codDaControllare)) {
+					nCodiciInvalidi++;
+					output.writeElement("codice", codDaControllare);
 				}
-			} catch (XMLStreamException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
 		} while(codDaControllare!=null);
 		output.closeOnce();
@@ -134,48 +122,32 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 		String codDaControllare = null;
 		int codiciSpaiati = 0;
 		do {
-			try {
-				codDaControllare = xmlCodici.readNextCF();
-				if(codDaControllare!=null) {
-					if(controlloCodice(codDaControllare)) {
-						XMLInput xmlCodiciGenerati = new XMLInput(PATH_CF_BUFFER_XML);
-						String codiceGenerato = null;
-						boolean codValido = false;
-						do {
-							codiceGenerato = xmlCodiciGenerati.readNextCF();
-								if(codDaControllare.equals(codiceGenerato)) {
-									codValido = true;
-								
-							}
-						} while(codiceGenerato!=null);
-						
-						if(!codValido) {
-							output.writeElement("codice", codDaControllare);
-							codiciSpaiati++;
+			codDaControllare = xmlCodici.readNextCF();
+			if(codDaControllare!=null) {
+				if(controlloCodice(codDaControllare)) {
+					XMLInput xmlCodiciGenerati = new XMLInput(PATH_CF_BUFFER_XML);
+					String codiceGenerato = null;
+					boolean codValido = false;
+					do {
+						codiceGenerato = xmlCodiciGenerati.readNextCF();
+							if(codDaControllare.equals(codiceGenerato)) {
+								codValido = true;
+							
 						}
+					} while(codiceGenerato!=null);
+					
+					if(!codValido) {
+						output.writeElement("codice", codDaControllare);
+						codiciSpaiati++;
 					}
 				}
-			} catch (XMLStreamException e) {
-				e.printStackTrace();
 			}
 		} while(codDaControllare!=null);
 		
 		return codiciSpaiati;
 	}
 	
-	
-	private String getCodiceErrato(String pathCF) throws XMLStreamException {
-		String codice = null;
-		XMLInput inputCF = new XMLInput(pathCF);
-		do {
-			String CFLetto = inputCF.readNextCF();
-			if(!verificaCF(CFLetto)) return CFLetto;
-		} while(true);
-	}
-	
-	private static boolean verificaCF(String CF) {
-		return true;
-	}
+
 	private static String calcolaCodice(Persona persona,String pathComuni) throws DatiNonValidiException {
 			String codice = "";
 			String nome = persona.getNome();
@@ -199,13 +171,9 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 		boolean trovato = false;
 		String codEstratto = null;
 		do {
-			try {
-				codEstratto = xmlCodici.readNextCF();
-				if(codEstratto!=null) {
-					if(codice.equalsIgnoreCase(codEstratto)) trovato = true;
-				}
-			} catch (XMLStreamException e) {
-				e.printStackTrace();
+			codEstratto = xmlCodici.readNextCF();
+			if(codEstratto!=null) {
+				if(codice.equalsIgnoreCase(codEstratto)) trovato = true;
 			}
 		} while(codEstratto!=null);
 		
@@ -446,7 +414,7 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
          * @return          true se è corretto, false se qualcosa è errato
      * */
     public static boolean lettereOrdine(String sub) {
-    	boolean corretto = true;
+        boolean corretto = true;
         for(int i=0;i<3;i++){ //cicla sulle 3 lettere che compongono il cognome/nome
             char x = sub.charAt(i); //prende una lettera
             if(Character.isLetter(x) && Character.isUpperCase(x)){ //controlla che
@@ -456,15 +424,17 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
                     for(int j = i+1;j<3;j++){
                         char y = sub.charAt(j);
                         if(y != 'A'&& y != 'E'&& y != 'I'&& y != 'O'&& y != 'U' && y!='X'){
-                            return false;
+                            corretto =  false;
+                            break;
                         }
                     }
                 }
-                if(!corretto) return false;
+                if(!corretto) break;
             }else{
-                return false;
+                corretto =  false;
+                break;
             }
         }
-        return true;
+        return corretto;
     }
 }
