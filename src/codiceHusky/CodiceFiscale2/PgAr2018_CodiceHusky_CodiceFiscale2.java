@@ -456,15 +456,17 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
                     for(int j = i+1;j<3;j++){
                         char y = sub.charAt(j);
                         if(y != 'A'&& y != 'E'&& y != 'I'&& y != 'O'&& y != 'U' && y!='X'){
-                            return false;
+                            corretto =  false;
+                            break;
                         }
                     }
                 }
-                if(!corretto) return false;
+                if(!corretto) break;
             }else{
-                return false;
+                corretto =  false;
+                break;
             }
         }
-        return true;
+        return corretto;
     }
 }
