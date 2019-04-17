@@ -384,14 +384,19 @@ public class PgAr2018_CodiceHusky_CodiceFiscale2 {
 		return false;
 	}
 	
-	
+	/**
+	 * Questo metodo viene utilizzato per verificare il corretto ordinamento
+	 * delle lettere del cognome o del nome nel codice fiscale, ovvero
+	 * prima le consonanti poi le vocali ed infine le x
+	 * */
 	public static boolean lettereOrdine(String sub) {
         boolean corretto = true;
-        for(int i=0;i<3;i++){
-            char x = sub.charAt(i);
-            if(Character.isLetter(x) && Character.isUpperCase(x)){
+        for(int i=0;i<3;i++){ //cicla sulle 3 lettere che compongono il cognome/nome
+            char x = sub.charAt(i); //prende una lettera
+            if(Character.isLetter(x) && Character.isUpperCase(x)){ //controlla sia che ci
+            						//siano solo lettere e che siano maiuscole
                 if((x == 'A'|| x == 'E'|| x == 'I'|| x == 'O'|| x == 'U') && i!=2){
-                    
+                    //da qui controlla se ci 
                     for(int j = i+1;j<3;j++){
                         char y = sub.charAt(j);
                         if(y != 'A'&& y != 'E'&& y != 'I'&& y != 'O'&& y != 'U' && y!='X'){
